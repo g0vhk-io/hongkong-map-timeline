@@ -33,13 +33,13 @@ export const passportAuthenicate = (authMethod) => {
 export const formatResponse = (data) => { // eslint-disable-line
   return {
     data,
-    success: true,
+    ok: true,
   };
 };
 
 export const formatPagination = (paginationData) => { // eslint-disable-line
   return {
-    success: true,
+    ok: true,
     data: paginationData.docs,
     total: paginationData.total,
     limit: paginationData.limit,

@@ -25,8 +25,8 @@ UserSchema.index(
   { unique: true },
 );
 
-UserSchema.methods.verifyPassword = async function verifyPassword(password) {
-  return bcrypt.compareAsync(password, this.password_hash);
+UserSchema.methods.verifyPassword = async function verifyPassword(hash: string) {
+  return bcrypt.compareAsync(hash, this.password_hash);
 };
 
 UserSchema.statics.hashPassword = async function hashPassword(password) {
@@ -46,8 +46,12 @@ export interface IUser {
  * Describing the document returned from mongo
  */
 export interface IUserDocument extends IUser, Document {
-  verifyPassword(): boolean;
-  hashPassword(): string;
+  verifyPassword(hash: string): boolean;
 }
 
-export const User: Model<IUserDocument> = model<IUserDocument>('User', UserSchema);
+export interface IUserModel extends Model<IUserDocument> {
+  // define static methods here
+  hashPassword(passowrd: string): string;
+}
+
+export const User: IUserModel = model<IUserDocument, IUserModel>('User', UserSchema);

@@ -8,6 +8,7 @@
       "allow-leading-underscore",
       "allow-pascal-case"
     ],
+    "import-name": false,
     "max-line-length": false
   }
 }

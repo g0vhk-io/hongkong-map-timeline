@@ -1,14 +1,13 @@
 import IPlace from './models/place';
-import getConfig from 'next/config';
-import fetch from 'isomorphic-unfetch';
-
-const { publicRuntimeConfig: { API_HOST } } = getConfig() as any;
+import axios from 'axios';
+import { API_HOST } from './config';
+import { generateLinkageTree, IPlaceLinkageNode } from './models/place-linkage';
 
 export async function getPlaces(lat: Number, lng: Number, radius: Number): Promise<IPlace[]> {
   let places: IPlace[] = []
   try {
-    const res = await fetch(`${API_HOST}/place?lat=${lat}&lng=${lng}&r=${radius}`);
-    const data = await res.json();
+    const { data } = await axios.get(`${API_HOST}/place/?lat=${lat}&lng=${lng}&r=${radius}`);
+
     places = data.data.places;
   } catch (error) {
     console.error(error.message);
@@ -18,15 +17,25 @@ export async function getPlaces(lat: Number, lng: Number, radius: Number): Promi
 }
 
 
-export async function getPlace(id: String): Promise<IPlace> {
-  
+export async function getPlace(id: String): Promise<IPlace | null> {
+
   try {
-    const res = await fetch(`${API_HOST}/place/${id}`);
-    const data = await res.json();
+    const { data }  = await axios.get(`${API_HOST}/place/${id}`);
     return data.data;
   } catch (error) {
     console.error(error.message);
     console.error(error.stack);
     return null;
-  }  
+  }
+}
+
+export async function getPlaceLinkage(id: string): Promise<IPlaceLinkageNode[]> {
+  try {
+    const { data }  = await axios.get(`${API_HOST}/place/${id}/linkage`);
+    return generateLinkageTree(data.data, id);
+  } catch (error) {
+    console.error(error.message);
+    console.error(error.stack);
+    return null;
+  }
 }

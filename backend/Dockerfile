@@ -9,8 +9,6 @@ RUN apk apk update && \
         # install for bscrypt
         apk --no-cache add --virtual builds-deps build-base python 
 
-
-
 #
 #       -- Dependencies --
 #
@@ -34,15 +32,13 @@ RUN cp -R node_modules prod_node_modules
 # install ALL node_modules, including 'devDependencies'
 RUN npm install
 
-
-
 #
-#     -- Test --
+#     -- Build --
 # 
-# run tests
-FROM dependencies AS test
+
+FROM dependencies AS build
 COPY . .
-RUN npm run test
+RUN npm run build
 
 #
 #     -- Release
@@ -56,10 +52,14 @@ RUN npm install -g pm2
 WORKDIR /opt/app
 
 # copy all the production only node modules
-COPY -a --from=dependencies /tmp/prod_node_modules ./node_modules
+COPY --from=dependencies /tmp/prod_node_modules ./node_modules
+
+# copy all the production only node modules
+COPY --from=build /tmp/built ./built
 
 # copy everythings without those indicated in .dockerignore
 COPY . .
+
 
 # run with pm2
 CMD [ "pm2-docker", "start" , "server.config.js"]

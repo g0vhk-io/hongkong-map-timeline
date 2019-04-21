@@ -11,7 +11,7 @@
       "outputCapture": "std",
       "outFiles": ["${workspaceFolder}/built/**/*.js"],
       "program": "${workspaceFolder}/src/server.ts",
-      // "runtimeArgs": ["-r", "ts-node/register"],
+      "preLaunchTask": "tsc: build - tsconfig.json",
       "internalConsoleOptions": "openOnSessionStart",
       "sourceMaps": true,
       "args": ["${relativeFile}"],

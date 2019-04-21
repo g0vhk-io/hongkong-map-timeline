@@ -8,9 +8,9 @@ import { ERROR_SERVER_EXCEPTION } from './utils/api_error';
 dotenv.config();
 
 import logger from './utils/logger';
-import { route } from './route';
+import { route } from './routes/routes';
 import {
-  MONGODB_HOST, MONGODB_DATABASE, MONGODB_USER, MONGODB_PASSWORD, LOGGER_LEVEL,
+  MONGODB_HOST, MONGODB_DATABASE, MONGODB_USER, MONGODB_PASSWORD, ROOT_ROUTE,
 } from './common/env';
 
 // use the passport
@@ -35,7 +35,6 @@ if (MONGODB_USER !== '') {
 
 mongoose.connect(mongoDB, opt);
 mongoose.set('useCreateIndex', true);
-mongoose.Promise = require('bluebird');
 
 const server = restify.createServer({
   name: 'myapp',
@@ -46,6 +45,12 @@ server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
 server.use(passport.initialize());
+server.pre((req: restify.Request, res:restify.Response, next:restify.Next) => {
+  const regex = new RegExp(`^${ROOT_ROUTE}`,'g');
+  req.url = req.url.replace(regex, '');
+  console.log(req.url);
+  next();
+});
 
 if (process.env.NODE_ENV !== 'production') {
   server.use(

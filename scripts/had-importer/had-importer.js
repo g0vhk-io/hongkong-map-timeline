@@ -21,12 +21,12 @@ function end() {
 
 async function startSendDataToAPI(host, data) {
   let successCount = 0;
-  
+
   async function createPlace(record) {
     // "link_id","district","estate","name","year_built","basements","storyes","units","lat","lng","address_1","address_2","address_3","address_4","address_5","address_6","address_7","address_8","address_9","address_10","address_11","address_12","address_13","address_14","org_name_1","org_name_2","org_name_3","org_name_4","org_name_5","org_name_6","org_name_7","org_name_8","org_name_9","org_name_10","org_type_1","org_type_2","org_type_3","org_type_4","org_type_5","org_type_6","org_type_7","org_type_8","org_type_9","org_type_10"
     const [providerId, district, estate, name, year_built, basements,
       storyes, units, lat, lng, address1, address2, address3, address4, address5, address6, address7, address8, address9, address10] = record;
-    
+
     let buildingName = `${estate}${name}`;
     if (buildingName === '') {
       buildingName = address1;
@@ -36,7 +36,7 @@ async function startSendDataToAPI(host, data) {
     }
 
     const res = await request.postAsync({
-      url: `http://${path.join(host, '/place')}`,
+      url: `http://${path.join(host, '/place/')}`,
       json: {
         location: {
           lat,

@@ -1,13 +1,11 @@
-import { Document, Schema, Model, Point, model } from 'mongoose';
-import * as PromiseBluebird from 'bluebird';
+import { Document, Schema, Model, model } from 'mongoose';
 import { jsonTransform } from './../utils/model_helper';
 import { Localizable, ILocalizable } from './localizable';
 import { TagSchema, ITagDocument } from './tag';
-import { PLACE_PROVIDER } from './../common/common';
+import { PLACE_PROVIDER, PLACE_METADATA_KEYS } from './../common/common';
+import { PlaceLinkageSchema } from './place_linkage';
 
-const bcrypt = PromiseBluebird.promisifyAll(require('bcrypt'));
-
-const PlaceSchema = new Schema(
+export const PlaceSchema = new Schema(
   {
     name: Localizable({ index: true }),
     description: Localizable({}),
@@ -28,15 +26,24 @@ const PlaceSchema = new Schema(
       enum: PLACE_PROVIDER,
     },
     provider_id: String,
+    metadata: [{
+      key: {
+        type: String,
+        enum: PLACE_METADATA_KEYS,
+      },
+      value: String,
+    }],
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJSON: {
       transform: jsonTransform([], (ret) => {
-        ret.location = {
-          lat: ret.location.coordinates[1],
-          lng: ret.location.coordinates[0],
-        };
+        if (ret.location) {
+          ret.location = {
+            lat: ret.location.coordinates[1],
+            lng: ret.location.coordinates[0],
+          };
+        }
       }),
     },
   });
@@ -49,7 +56,12 @@ PlaceSchema.index({ provider: 1, provider_id: 1, year_from: 1, year_to: 1 }, { u
 */
 export interface IPlace {
   name?: ILocalizable;
+  address?: ILocalizable;
   description?: ILocalizable;
+  year_from: Number;
+  year_to: Number;
+  provider: string;
+  provider_id?: string;
   tags: [ITagDocument];
 }
 

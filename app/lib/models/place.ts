@@ -1,15 +1,16 @@
 import Localizable from './localizable';
 
 export default interface IPlace {
-  id: String,
+  id: string,
   name: Localizable;
   description?: Localizable;
   tags?: Localizable[];
   address?: Localizable;
-  location: {
-    lat: Number,
-    lng: Number,
+  location?: {
+    lat: number,
+    lng: number,
   },
-  year_from: Number;
-  year_to: Number;
+  year_from: number;
+  year_to: number;
+
 }

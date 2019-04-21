@@ -1,4 +1,4 @@
-import { Document, Schema, Model, Point, model } from 'mongoose';
+import { Document, Schema, Model, model } from 'mongoose';
 import * as PromiseBluebird from 'bluebird';
 import { jsonTransform } from './../utils/model_helper';
 import { Localizable, ILocalizable } from './localizable';
